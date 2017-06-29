@@ -1,6 +1,9 @@
 <?php
 
 use Dotenv\Dotenv;
+use Symfony\Component\VarDumper\VarDumper;
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\{HtmlDumper, CliDumper};
 
 session_start();
 
@@ -34,6 +37,7 @@ $container['view'] = function ($container) {
         $container->router,
         $container->request->getUri()
     ));
+    $view->addExtension(new \App\View\DebugExtension);
 
     $view->getEnvironment()->addGlobal('app', $container->settings['app']);
 
@@ -41,3 +45,21 @@ $container['view'] = function ($container) {
 };
 
 require __DIR__ . '/../app/routes.php';
+
+
+// SYMFONY VARDUMPER
+VarDumper::setHandler(function ($var) {
+    $cloner = new VarCloner;
+
+    $htmlDumper = new HtmlDumper;
+    $htmlDumper->setStyles([
+        'default' => 'background-color:#fff; color:#FF8400; line-height:1.2em; font:12px Menlo, Monaco, Consolas, monospace; word-wrap: break-word; white-space: pre-wrap; position:relative; z-index:99999; word-break: break-all',
+        'public' => 'color:#555',
+        'protected' => 'color:#555',
+        'private' => 'color:#555',
+    ]);
+
+    $dumper = PHP_SAPI === 'cli' ? new CliDumper : $htmlDumper;
+
+    $dumper->dump($cloner->cloneVar($var));
+});
