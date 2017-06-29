@@ -1,0 +1,26 @@
+{
+    "name": "seramity/spring",
+    "description": "A starter project for Slim 3",
+    "keywords": ["php", "slim", "framework"],
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": ">=7.0.0",
+        "slim/slim": ">3.0",
+        "slim/twig-view": "^2.2",
+        "vlucas/phpdotenv": "^2.4",
+        "symfony/var-dumper": "^3.3"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "App\\": "app"
+        }
+    },
+
+    "scripts": {
+        "post-root-package-install": [
+            "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ]
+    }
+}
